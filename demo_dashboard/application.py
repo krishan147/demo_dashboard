@@ -1,32 +1,76 @@
-# -*- coding: utf-8 -*-
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+app = dash.Dash()
+app.layout = html.Div([
+    html.Div(
+        className="row",
+        children=[
+            html.Div(
+                className="six columns",
+                children=[
+                    html.Div(
+                        children=dcc.Graph(
+                            id='left-graph',
+                            figure={
+                                'data': [{
+                                    'x': [1, 2, 3],
+                                    'y': [3, 1, 2],
+                                    'type': 'bar'
+                                }],
+                                'layout': {
+                                    'height': 800,
+                                    'margin': {
+                                        'l': 10, 'b': 20, 't': 0, 'r': 0
+                                    }
+                                }
+                            }
+                        )
+                    )
+                ]
+            ),
+            html.Div(
+                className="six columns",
+                children=html.Div([
+                    dcc.Graph(
+                        id='right-top-graph',
+                        figure={
+                            'data': [{
+                                'x': [1, 2, 3],
+                                'y': [3, 1, 2],
+                                'type': 'bar'
+                            }],
+                            'layout': {
+                                'height': 400,
+                                'margin': {'l': 10, 'b': 20, 't': 0, 'r': 0}
+                            }
+                        }
+                    ),
+                    dcc.Graph(
+                        id='right-bottom-graph',
+                        figure={
+                            'data': [{
+                                'x': [1, 2, 3],
+                                'y': [3, 1, 2],
+                                'type': 'bar'
+                            }],
+                            'layout': {
+                                'height': 400,
+                                'margin': {'l': 10, 'b': 20, 't': 0, 'r': 0}
+                            }
+                        }
+                    ),
 
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
-
-app.layout = html.Div(children=[
-    html.H1(children='Hello Dash'),
-
-    html.Div(children='''
-        Dash: A web application framework for Python.
-    '''),
-
-    dcc.Graph(
-        id='example-graph',
-        figure={
-            'data': [
-                {'x': [1, 2, 3], 'y': [4, 1, 2], 'type': 'bar', 'name': 'SF'},
-                {'x': [1, 2, 3], 'y': [2, 4, 5], 'type': 'bar', 'name': u'Montréal'},
-            ],
-            'layout': {
-                'title': 'Dash Data Visualization'
-            }
-        }
+                ])
+            )
+        ]
     )
 ])
+
+app.css.append_css({
+    'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'
+})
 
 if __name__ == '__main__':
     app.run_server(debug=True)
