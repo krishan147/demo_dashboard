@@ -76,6 +76,21 @@ app.layout = html.Div([
                         }
                     ),
 
+                    dcc.Graph(
+                        id='left-bottom-graph-two',
+                        figure={
+                            'data': [{
+                                'x': [5, 7, 15],
+                                'y': [8, 8, 8],
+                                'type': 'bar'
+                            }],
+                            'layout': {
+                                'height': 500,
+                                'margin': {'l': 10, 'b': 20, 't': 0, 'r': 0}
+                            }
+                        }
+                    ),
+
                 ])
             )
         ]
