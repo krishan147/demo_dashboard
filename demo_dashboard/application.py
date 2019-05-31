@@ -42,7 +42,7 @@ app.layout = html.Div([
                                 'type': 'bar'
                             }],
                             'layout': {
-                                'height': 400,
+                                'height': 200,
                                 'margin': {'l': 10, 'b': 20, 't': 0, 'r': 0}
                             }
                         }
@@ -56,7 +56,7 @@ app.layout = html.Div([
                                 'type': 'bar'
                             }],
                             'layout': {
-                                'height': 400,
+                                'height': 200,
                                 'margin': {'l': 10, 'b': 20, 't': 0, 'r': 0}
                             }
                         }
