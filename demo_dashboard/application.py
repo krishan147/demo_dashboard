@@ -85,7 +85,7 @@ app.layout = html.Div([
                                 'type': 'bar'
                             }],
                             'layout': {
-                                'height': 500,
+                                'height': 200,
                                 'margin': {'l': 10, 'b': 20, 't': 0, 'r': 0}
                             }
                         }
