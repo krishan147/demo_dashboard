@@ -1,106 +1,165 @@
+## Plotly Dash Tutorial
+
+# -*- coding: utf-8 -*-
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-from dash.dependencies import Input, Output
 
-import pandas as pd
-import plotly.graph_objs as go
+app = dash.Dash()
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+all_options = {
+    'America': ['New York City', 'San Francisco', 'Cincinnati'],
+    'Canada': [u'Montreal', 'Toronto', 'Ottawa'],
+    'All': ['New York City', 'San Francisco', 'Cincinnati', u'Montreal', 'Toronto', 'Ottawa']
+}
 
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+city_data = {
+    'San Francisco': {'x': [1, 2, 3], 'y': [4, 1, 2]},
+    'Montreal': {'x': [1, 2, 3], 'y': [2, 4, 5]},
+    'New York City': {'x': [1, 2, 3], 'y': [2, 2, 7]},
+    'Cincinnati': {'x': [1, 2, 3], 'y': [1, 0, 2]},
+    'Toronto': {'x': [1, 2, 3], 'y': [4, 7, 3]},
+    'Ottawa': {'x': [1, 2, 3], 'y': [2, 3, 3]}
+}
 
-df = pd.read_csv(
-    'https://gist.githubusercontent.com/chriddyp/'
-    'cb5392c35661370d95f300086accea51/raw/'
-    '8e0768211f6b747c0db42a9ce9a0937dafcbd8b2/'
-    'indicators.csv')
+app.title = 'Dash Demo'
 
-available_indicators = df['Indicator Name'].unique()
+# Boostrap CSS.
+app.css.append_css({'external_url': 'https://codepen.io/amyoshino/pen/jzXypZ.css'})
 
-app.layout = html.Div([
+app.layout = html.Div(
     html.Div([
+        html.Div([
+            html.H1(children='Dash Demo',
+                    className = "nine columns"),
+            html.Img(
+                src="http://test.fulcrumanalytics.com/wp-content/uploads/2015/10/Fulcrum-logo_840X144.png",
+                className='three columns',
+                style={
+                    'height': '14%',
+                    'width': '14%',
+                    'float': 'right',
+                    'position': 'relative',
+                    'margin-top': 20,
+                    'margin-right': 20
+                },
+            ),
+            html.Div(children='''
+                        Dash: A web application framework for Python.
+                        ''',
+                    className = 'nine columns')
+        ], className = "row"),
+
+        html.Div(
+            [
+                html.Div(
+                    [
+                        html.P('Choose City'),
+                        dcc.Checklist(
+                                id = 'Cities',
+                                values=['San Francisco'],
+                                labelStyle={'display': 'inline-block'}
+                        ),
+                    ],
+                    className='six columns',
+                    style={'margin-top': '10'}
+                ),
+                html.Div(
+                    [
+                        html.P('Choose Country:'),
+                        dcc.RadioItems(
+                                id = 'Country',
+                                options=[{'label': k, 'value': k} for k in all_options.keys()],
+                                value='All',
+                                labelStyle={'display': 'inline-block'}
+                        ),
+                    ],
+                    className='six columns',
+                    style={'margin-top': '10'}
+                )
+            ], className="row"
+        ),
 
         html.Div([
-            dcc.Dropdown(
-                id='xaxis-column',
-                options=[{'label': i, 'value': i} for i in available_indicators],
-                value='Fertility rate, total (births per woman)'
-            ),
-            dcc.RadioItems(
-                id='xaxis-type',
-                options=[{'label': i, 'value': i} for i in ['Linear', 'Log']],
-                value='Linear',
-                labelStyle={'display': 'inline-block'}
-            )
-        ],
-        style={'width': '48%', 'display': 'inline-block'}),
-
+            html.Div([
+                dcc.Graph(
+                    id='example-graph'
+                )
+            ], className = 'six columns'),
         html.Div([
-            dcc.Dropdown(
-                id='yaxis-column',
-                options=[{'label': i, 'value': i} for i in available_indicators],
-                value='Life expectancy at birth, total (years)'
-            ),
-            dcc.RadioItems(
-                id='yaxis-type',
-                options=[{'label': i, 'value': i} for i in ['Linear', 'Log']],
-                value='Linear',
-                labelStyle={'display': 'inline-block'}
+            dcc.Graph(
+                id='example-graph-2'
             )
-        ],style={'width': '48%', 'float': 'right', 'display': 'inline-block'})
-    ]),
-
-    dcc.Graph(id='indicator-graphic'),
-
-    dcc.Slider(
-        id='year--slider',
-        min=df['Year'].min(),
-        max=df['Year'].max(),
-        value=df['Year'].max(),
-        marks={str(year): str(year) for year in df['Year'].unique()},
-        step=None
-    )
-])
+        ], className = "six columns")
+    ], className = "row")
+    ], className='ten columns offset-by-one')
+)
 
 @app.callback(
-    Output('indicator-graphic', 'figure'),
-    [Input('xaxis-column', 'value'),
-     Input('yaxis-column', 'value'),
-     Input('xaxis-type', 'value'),
-     Input('yaxis-type', 'value'),
-     Input('year--slider', 'value')])
-def update_graph(xaxis_column_name, yaxis_column_name,
-                 xaxis_type, yaxis_type,
-                 year_value):
-    dff = df[df['Year'] == year_value]
+    dash.dependencies.Output('Cities', 'options'),
+    [dash.dependencies.Input('Country', 'value')])
+def set_cities_options(selected_country):
+    return [{'label': i, 'value': i} for i in all_options[selected_country]]
 
-    return {
-        'data': [go.Scatter(
-            x=dff[dff['Indicator Name'] == xaxis_column_name]['Value'],
-            y=dff[dff['Indicator Name'] == yaxis_column_name]['Value'],
-            text=dff[dff['Indicator Name'] == yaxis_column_name]['Country Name'],
-            mode='markers',
-            marker={
-                'size': 15,
-                'opacity': 0.5,
-                'line': {'width': 0.5, 'color': 'white'}
-            }
-        )],
-        'layout': go.Layout(
-            xaxis={
-                'title': xaxis_column_name,
-                'type': 'linear' if xaxis_type == 'Linear' else 'log'
-            },
-            yaxis={
-                'title': yaxis_column_name,
-                'type': 'linear' if yaxis_type == 'Linear' else 'log'
-            },
-            margin={'l': 40, 'b': 40, 't': 10, 'r': 0},
-            hovermode='closest'
-        )
+@app.callback(
+    dash.dependencies.Output('example-graph', 'figure'),
+    [dash.dependencies.Input('Cities', 'values')])
+def update_graph_src(selector):
+    data = []
+    for city in selector:
+        data.append({'x': city_data[city]['x'], 'y': city_data[city]['y'],
+                    'type': 'bar', 'name': city})
+    figure = {
+        'data': data,
+        'layout': {
+            'title': 'Graph 1',
+            'xaxis' : dict(
+                title='x Axis',
+                titlefont=dict(
+                family='Courier New, monospace',
+                size=20,
+                color='#7f7f7f'
+            )),
+            'yaxis' : dict(
+                title='y Axis',
+                titlefont=dict(
+                family='Helvetica, monospace',
+                size=20,
+                color='#7f7f7f'
+            ))
+        }
     }
+    return figure
 
+@app.callback(
+    dash.dependencies.Output('example-graph-2', 'figure'),
+    [dash.dependencies.Input('Cities', 'values')])
+def update_graph_src(selector):
+    data = []
+    for city in selector:
+        data.append({'x': city_data[city]['x'], 'y': city_data[city]['y'],
+                    'type': 'line', 'name': city})
+    figure = {
+        'data': data,
+        'layout': {
+            'title': 'Graph 1',
+            'xaxis' : dict(
+                title='x Axis',
+                titlefont=dict(
+                family='Courier New, monospace',
+                size=20,
+                color='#7f7f7f'
+            )),
+            'yaxis' : dict(
+                title='y Axis',
+                titlefont=dict(
+                family='Helvetica, monospace',
+                size=20,
+                color='#7f7f7f'
+            ))
+        }
+    }
+    return figure
 
 if __name__ == '__main__':
     app.run_server(debug=True)
