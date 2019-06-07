@@ -22,7 +22,7 @@ city_data = {
     'Ottawa': {'x': [1, 2, 3], 'y': [2, 3, 3]}
 }
 
-app.title = 'Dash Demo'
+app.title = 'Dash demo'
 
 # Boostrap CSS.
 app.css.append_css({'external_url': 'https://codepen.io/amyoshino/pen/jzXypZ.css'})
