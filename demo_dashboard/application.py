@@ -45,7 +45,7 @@ app.layout = html.Div(
                 },
             ),
             html.Div(children='''
-                        Dash: A web application framework for Python.
+                        Dash: A framework for Python.
                         ''',
                     className = 'nine columns')
         ], className = "row"),
