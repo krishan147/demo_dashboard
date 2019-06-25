@@ -6,5 +6,5 @@ df = pd.DataFrame(data, columns = ['list 1','list 2'])
 
 from scipy import stats # For in-built method to get PCC
 
-pearson_coef, p_value = stats.pearsonr(df["list 1"], df["list 2"]) #define the columns to perform calculations on
+pearson_coef, p_value = stats.pearsonr(df["list 1"], df["list 2"]) #define thee columns to perform calculations on
 print("Pearson correlation coefficient: ", pearson_coef, "and a P-value of:", p_value)
